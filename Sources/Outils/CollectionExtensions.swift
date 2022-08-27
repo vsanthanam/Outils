@@ -1,5 +1,5 @@
 // Outils
-// OutilsTests.swift
+// CollectionExtensions.swift
 //
 // MIT License
 //
@@ -23,9 +23,32 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-@testable import Outils
-import XCTest
+import Foundation
 
-final class OutilsTests: XCTestCase {
-    func testExample() throws {}
+public extension Collection {
+
+    /// Sort collection using a key path
+    /// - Parameters:
+    ///   - keyPath: Key path
+    ///   - comparator: The comparison function
+    /// - Returns: An array containing the sorted collection
+    func sorted<T>(by keyPath: KeyPath<Element, T>, _ comparator: (_ lhs: T, _ rhs: T) -> Bool) -> [Element] {
+        sorted { lhs, rhs in
+            comparator(lhs[keyPath: keyPath], rhs[keyPath: keyPath])
+        }
+    }
+
+    /// Sort the collection using a key path
+    /// - Parameters:
+    ///   - keyPath: key path
+    ///   - order: The sort order
+    /// - Returns: An array containing the sorted collection
+    func sorted<T>(by keyPath: KeyPath<Element, T>, order: SortOrder = .forward) -> [Element] where T: Comparable {
+        switch order {
+        case .forward:
+            return sorted(by: keyPath, <)
+        case .reverse:
+            return sorted(by: keyPath, <)
+        }
+    }
 }

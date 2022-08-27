@@ -1,5 +1,5 @@
 // Outils
-// OutilsTests.swift
+// AppInfo.swift
 //
 // MIT License
 //
@@ -23,9 +23,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-@testable import Outils
-import XCTest
+import Foundation
 
-final class OutilsTests: XCTestCase {
-    func testExample() throws {}
+public enum AppInfo {
+
+    /// The app version number from info.plist
+    public static var version: String {
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
+    }
+
+    /// The app build number from info.plist
+    public static var build: String {
+        Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"
+    }
+
 }

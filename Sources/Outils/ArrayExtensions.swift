@@ -1,5 +1,5 @@
 // Outils
-// OutilsTests.swift
+// ArrayExtensions.swift
 //
 // MIT License
 //
@@ -23,9 +23,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-@testable import Outils
-import XCTest
+import Foundation
 
-final class OutilsTests: XCTestCase {
-    func testExample() throws {}
+public extension Array {
+
+    /// Sort the arrary using a keypath
+    /// - Parameters:
+    ///   - keyPath: The keypath used to sort the array
+    ///   - comparator: The comparison function
+    mutating func sort<T>(by keyPath: KeyPath<Element, T>, _ comparator: (_ lhs: T, _ rhs: T) -> Bool) {
+        self = sorted(by: keyPath, comparator)
+    }
+
+    /// - Parameters:
+    ///   - keyPath: The keypath
+    ///   - order: The sorting order
+    mutating func sort<T>(by keyPath: KeyPath<Element, T>, order: SortOrder = .forward) where T: Comparable {
+        self = sorted(by: keyPath, order: order)
+    }
+
+    /// Safely retrieve an element the array using its indexs
+    subscript(safe index: Index) -> Element? {
+        guard index < count else { return nil }
+        return self[index]
+    }
 }

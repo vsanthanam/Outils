@@ -1,5 +1,5 @@
 // Outils
-// OutilsTests.swift
+// OptionalType.swift
 //
 // MIT License
 //
@@ -23,9 +23,48 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-@testable import Outils
-import XCTest
+import Combine
+import Foundation
 
-final class OutilsTests: XCTestCase {
-    func testExample() throws {}
+/// A protocol that all optional types conform to
+public protocol OptionalType {
+
+    /// The underlying non-optional type
+    associatedtype Wrapped
+
+    /// Get the value as an `Optional<Wrapped>`
+    var asOptional: Wrapped? { get }
+}
+
+extension Optional: OptionalType {
+    public var asOptional: Wrapped? { self }
+}
+
+public extension Publisher where Output: OptionalType {
+
+    /// Remove `nil` values from the sequence
+    /// - Returns: The sequence
+    func filterNil() -> Publishers.CompactMap<Self, Output.Wrapped> {
+        compactMap { input in
+            input.asOptional
+        }
+    }
+}
+
+public extension Publisher {
+
+    /// Wrap the sequence in optional types
+    /// - Returns: The sequence
+    func toOptional() -> Publishers.Map<Self, Output?> {
+        map { $0 }
+    }
+}
+
+public extension Collection where Element: OptionalType {
+
+    /// Remove `nil` values from the collection
+    /// - Returns: The filtered collection
+    func filterNil() -> [Element.Wrapped] {
+        compactMap(\.asOptional)
+    }
 }

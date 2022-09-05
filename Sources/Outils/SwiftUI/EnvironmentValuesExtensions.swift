@@ -26,19 +26,50 @@
 import Foundation
 import SwiftUI
 
+private struct SwiftUIPreviewsEnvironmentKey: EnvironmentKey {
+
+    // MARK: - EnvironmentKey
+
+    typealias Value = Bool
+
+    static var defaultValue: Value {
+        #if DEBUG
+            EnvironmentVariables["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
+        #else
+            false
+        #endif
+    }
+}
+
+private struct UITestEnvironmentKey: EnvironmentKey {
+
+    // MARK: - EnvironmentKey
+
+    typealias Value = Bool
+
+    static let defaultValue: Bool = ProcessInfo.processInfo.arguments.contains("-ui_testing")
+
+}
+
 public extension EnvironmentValues {
 
     /// Whether or not the view is running within SwiftUI previews.
     var isPreview: Bool {
-        #if DEBUG
-            return ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
-        #else
-            return false
-        #endif
+        get {
+            self[SwiftUIPreviewsEnvironmentKey.self]
+        }
+        set {
+            self[SwiftUIPreviewsEnvironmentKey.self] = newValue
+        }
     }
 
     /// Whether or not the view is running within then the UITest environment.
     var isUITest: Bool {
-        ProcessInfo.processInfo.arguments.contains("-ui_testing")
+        get {
+            self[UITestEnvironmentKey.self]
+        }
+        set {
+            self[UITestEnvironmentKey.self] = newValue
+        }
     }
 }

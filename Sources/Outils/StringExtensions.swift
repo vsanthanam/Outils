@@ -60,7 +60,7 @@ public extension String {
     var localized: String {
         NSLocalizedString(self, comment: "")
     }
-    
+
     /// Create the string in snake case
     var inSnakeCase: String {
         func processCamalCaseRegex(input: String, pattern: String) -> String? {

@@ -33,8 +33,8 @@ public extension String {
     static func decode(_ base64: String) throws -> String {
         guard let data = Data(base64Encoded: base64),
               let decoded = String(data: data, encoding: .utf8) else {
-            throw AnyError("Base 64 Decode Failed",
-                           failureReason: "Decode method(s) returned nil")
+            throw ErrorMessage("Base 64 Decode Failed",
+                               failureReason: "Decode method(s) returned nil")
         }
         return decoded
     }

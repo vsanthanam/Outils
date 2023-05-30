@@ -2,7 +2,7 @@
 branch=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
 
 run_docc () {
-    swift package --allow-writing-to-directory docs generate-documentation --target NetworkReachability --disable-indexing --transform-for-static-hosting --hosting-base-path Outils/docs --output-path docs --include-extended-types
+    swift package --allow-writing-to-directory docs generate-documentation --target Outils --disable-indexing --transform-for-static-hosting --hosting-base-path Outils/docs --output-path docs --include-extended-types
 }
 
 create_branches () {

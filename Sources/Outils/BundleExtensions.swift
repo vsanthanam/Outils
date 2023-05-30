@@ -1,5 +1,5 @@
 // Outils
-// EnvironmentVariables.swift
+// BundleExtensions.swift
 //
 // MIT License
 //
@@ -25,8 +25,16 @@
 
 import Foundation
 
-public enum EnvironmentVariables {
-    public static subscript(_ key: String) -> String? {
-        ProcessInfo.processInfo.environment[key]
+public extension Bundle {
+
+    /// The short version number from the bundle's info.plist
+    var shortVersion: String {
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
     }
+
+    /// The build number from the bundle's info.plist
+    var build: String {
+        Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"
+    }
+
 }

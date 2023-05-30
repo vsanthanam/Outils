@@ -1,5 +1,5 @@
 // Outils
-// EnvironmentValuesExtensions.swift
+// OptionalExtensions.swift
 //
 // MIT License
 //
@@ -23,53 +23,44 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import Foundation
-import SwiftUI
+public extension Optional {
 
-private struct SwiftUIPreviewsEnvironmentKey: EnvironmentKey {
-
-    // MARK: - EnvironmentKey
-
-    typealias Value = Bool
-
-    static var defaultValue: Value {
-        #if DEBUG
-            ProcessEnvironment.variables.value(forKey: "XCODE_RUNNING_FOR_PREVIEWS", Value.self)
-        #else
-            false
-        #endif
-    }
-}
-
-private struct UITestEnvironmentKey: EnvironmentKey {
-
-    // MARK: - EnvironmentKey
-
-    typealias Value = Bool
-
-    static let defaultValue: Bool = ProcessEnvironment.arguments.contains("-ui_testing")
-
-}
-
-public extension EnvironmentValues {
-
-    /// Whether or not the view is running within SwiftUI previews.
-    var isPreview: Bool {
-        get {
-            self[SwiftUIPreviewsEnvironmentKey.self]
-        }
-        set {
-            self[SwiftUIPreviewsEnvironmentKey.self] = newValue
+    @discardableResult
+    func mustExist(
+        _ message: @autoclosure () -> String? = nil,
+        file: StaticString = #file,
+        function: StaticString = #function,
+        line: UInt = #line,
+        column: UInt = #column
+    ) throws -> Wrapped {
+        switch self {
+        case let .some(wrapped):
+            return wrapped
+        case .none:
+            throw ErrorMessage(
+                message() ?? "A required value contained nil",
+                file: file,
+                function: function,
+                line: line,
+                column: column
+            )
         }
     }
 
-    /// Whether or not the view is running within then the UITest environment.
-    var isUITest: Bool {
-        get {
-            self[UITestEnvironmentKey.self]
-        }
-        set {
-            self[UITestEnvironmentKey.self] = newValue
+    @discardableResult
+    func assertIfNil(
+        _ message: @autoclosure () -> String? = nil,
+        file: StaticString = #file,
+        function: StaticString = #function,
+        line: UInt = #line,
+        column: UInt = #column
+    ) -> Wrapped? {
+        switch self {
+        case .some:
+            return self
+        case .none:
+            assertionFailure(message() ?? "A required value contained nil", file: file, line: line)
+            return self
         }
     }
 }

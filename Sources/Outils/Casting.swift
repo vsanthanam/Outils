@@ -1,5 +1,5 @@
 // Outils
-// AppInfo.swift
+// Casting.swift
 //
 // MIT License
 //
@@ -23,18 +23,39 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import Foundation
-
-public enum AppInfo {
-
-    /// The app version number from info.plist
-    public static var version: String {
-        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
+public func cast<T>(
+    _ value: Any,
+    to type: T.Type = T.self,
+    message: @autoclosure () -> String? = nil,
+    file: StaticString = #file,
+    function: StaticString = #function,
+    line: UInt = #line,
+    column: UInt = #column
+) throws -> T {
+    guard let value = value as? T else {
+        throw ErrorMessage(
+            message() ?? "Could not cast value \(value) to type \(T.self)",
+            file: file,
+            function: function,
+            line: line,
+            column: column
+        )
     }
+    return value
+}
 
-    /// The app build number from info.plist
-    public static var build: String {
-        Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"
+public func castOrAssert<T>(
+    _ value: Any,
+    to type: T.Type = T.self,
+    message: @autoclosure () -> String? = nil,
+    file: StaticString = #file,
+    function: StaticString = #function,
+    line: UInt = #line,
+    column: UInt = #column
+) -> T? {
+    guard let value = value as? T else {
+        assertionFailure(message() ?? "Could not cast value \(value) to type \(T.self)", file: file, line: line)
+        return nil
     }
-
+    return value
 }

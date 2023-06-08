@@ -12,7 +12,7 @@ Outils is based on [Freddy](https://github.com/bignerdranch/Freddy), an early li
 
 ## Installation
 
-Outils currently distributed exclusively through the [Swift Package Manager](https://www.swift.org/package-manager/). 
+Outils is a collection of Swift functions and library extensions that I find myself regularly re-creating in my projects. They contain free standing functions and types, as well as extensions on Swift standard library, `Foundation`, `UIKit`, and `SwiftUI`.
 
 To add Outils as a dependency to an existing Swift package, add the following line of code to the `dependencies` parameter of your `Package.swift` file:
 

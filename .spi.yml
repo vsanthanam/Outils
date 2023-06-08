@@ -1,0 +1,12 @@
+version: 1
+builder:
+  configs:
+  - platform: ios
+    scheme: Outils
+  - platform: macos-xcodebuild
+    scheme: Outils
+  - platform: tvos
+    scheme: Outils
+  - platform: watchos
+    scheme: Outils
+  - documentation_targets: [Outils]

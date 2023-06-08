@@ -26,13 +26,17 @@
 import Foundation
 import Outils
 
-// let a = 17
-// let b = 25
-//
-// let (result, code) = #stringify(a + b)
-//
-// print("The value \(result) was produced by the code \"\(code)\"")
-
 let thing = "foo"
-let first = #URL("https://www.apple.com")
-let test = #mailTo("talkto@vsanthanam.com")
+
+let url = #URL("foo")
+// let brokenUrl = #URL("")
+
+let someLink = #link("https://www.apple.com")
+// let brokenLink = #link("foo")
+
+let email = #mailTo("talkto@vsanthanam.com")
+// let brokenMail = #mailTo("www.apple.com")
+
+let date1 = #date("01-03-2021")
+let date2 = #date("12.41PM")
+// let brokenDate = #date("foo")

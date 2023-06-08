@@ -1,5 +1,5 @@
 // Outils
-// URLMacroTests.swift
+// LinkMacroTests.swift
 //
 // MIT License
 //
@@ -29,36 +29,35 @@ import SwiftSyntaxMacrosTestSupport
 import XCTest
 
 private let testMacros: [String: Macro.Type] = [
-    "URL": URLMacro.self,
+    "link": LinkMacro.self,
 ]
 
-final class URLMacroTests: XCTestCase {
+final class LinkMacroTests: XCTestCase {
 
     func test_valid() {
         assertMacroExpansion(
             """
-            let x = #URL("foo")
+            let x = #link("https://www.apple.com")
             """,
             expandedSource: """
-            let x = URL(string: "foo")!
+            let x = URL(string: "https://www.apple.com")!
             """,
             macros: testMacros
         )
     }
 
-    func test_empty() {
+    func test_malformed() {
         assertMacroExpansion(
             """
-            let x = #URL("")
+            let x = #link("foo")
             """,
             expandedSource: """
-            let x = #URL("")
+            let x = #link("foo")
             """,
             diagnostics: [
-                DiagnosticSpec(message: "The provided value \"\" is invalid", line: 1, column: 9)
+                DiagnosticSpec(message: "The provided value \"foo\" is not a legal URL", line: 1, column: 9)
             ],
             macros: testMacros
         )
     }
-
 }

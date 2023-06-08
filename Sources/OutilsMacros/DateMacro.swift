@@ -1,5 +1,5 @@
 // Outils
-// LinkMacro.swift
+// DateMacro.swift
 //
 // MIT License
 //
@@ -29,7 +29,7 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
-public struct LinkMacro: ExpressionMacro {
+public struct DateMacro: ExpressionMacro {
 
     // MARK: - ExpressionMacro
 
@@ -41,19 +41,27 @@ public struct LinkMacro: ExpressionMacro {
               let segments = argument.as(StringLiteralExprSyntax.self)?.segments,
               segments.count == 1,
               case let .stringSegment(literal) = segments.first else {
-            throw MacroError("The #link macro requires a single string literal argument")
+            throw MacroError("The #date macro requires a single string literal argument")
         }
-        guard literal.content.text.isLink else {
-            throw MacroError("The provided value \(argument) is not a legal URL")
+        guard literal.content.text.isDate else {
+            throw MacroError("No date found in \(argument)")
         }
-        return "URL(string: \(argument))!"
+        return """
+        {
+            let value = \(argument)
+            let detector = try! NSDataDetector(types: NSTextCheckingResult.CheckingType.date.rawValue)
+            let match = detector.firstMatch(in: value, options: [], range: NSRange(location: 0, length: value.utf16.count))
+            return match!.date!
+        }()
+        """
     }
 }
 
 private extension String {
-    var isLink: Bool {
-        let detector = try! NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
-        guard let match = detector.firstMatch(in: self, options: [], range: NSRange(location: 0, length: utf16.count)) else {
+    var isDate: Bool {
+        let detector = try! NSDataDetector(types: NSTextCheckingResult.CheckingType.date.rawValue)
+        guard let match = detector.firstMatch(in: self, options: [], range: NSRange(location: 0, length: utf16.count)),
+              match.resultType == .date else {
             return false
         }
         return match.range.length == utf16.count

@@ -1,5 +1,5 @@
 // Outils
-// URLMacroTests.swift
+// DateMacroTests.swift
 //
 // MIT License
 //
@@ -29,36 +29,40 @@ import SwiftSyntaxMacrosTestSupport
 import XCTest
 
 private let testMacros: [String: Macro.Type] = [
-    "URL": URLMacro.self,
+    "date": DateMacro.self,
 ]
 
-final class URLMacroTests: XCTestCase {
+final class DateMacroTests: XCTestCase {
 
     func test_valid() {
         assertMacroExpansion(
             """
-            let x = #URL("foo")
+            let x = #date("08-22-1995")
             """,
             expandedSource: """
-            let x = URL(string: "foo")!
+            let x = {
+                let value = "08-22-1995"
+                let detector = try! NSDataDetector(types: NSTextCheckingResult.CheckingType.date.rawValue)
+                let match = detector.firstMatch(in: value, options: [], range: NSRange(location: 0, length: value.utf16.count))
+                return match!.date!
+            }()
             """,
             macros: testMacros
         )
     }
 
-    func test_empty() {
+    func test_malformed() {
         assertMacroExpansion(
             """
-            let x = #URL("")
+            let x = #date("foo")
             """,
             expandedSource: """
-            let x = #URL("")
+            let x = #date("foo")
             """,
             diagnostics: [
-                DiagnosticSpec(message: "The provided value \"\" is invalid", line: 1, column: 9)
+                DiagnosticSpec(message: "No date found in \"foo\"", line: 1, column: 9)
             ],
             macros: testMacros
         )
     }
-
 }

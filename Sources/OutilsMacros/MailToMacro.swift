@@ -41,7 +41,7 @@ public struct MailToMacro: ExpressionMacro {
               let segments = argument.as(StringLiteralExprSyntax.self)?.segments,
               segments.count == 1,
               case let .stringSegment(literal) = segments.first else {
-            throw MacroError("The #URL macro requires a single string literal argument")
+            throw MacroError("The #mailTo macro requires a single string literal argument")
         }
         guard literal.content.text.isValidEmail else {
             throw MacroError("The provided value \(argument) is invalid")

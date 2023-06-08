@@ -1,5 +1,5 @@
 // Outils
-// URLMacroTests.swift
+// MacrosTests.swift
 //
 // MIT License
 //
@@ -23,42 +23,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import OutilsMacros
-import SwiftSyntaxMacros
-import SwiftSyntaxMacrosTestSupport
+import Outils
 import XCTest
 
-private let testMacros: [String: Macro.Type] = [
-    "URL": URLMacro.self,
-]
+final class MacrosTests: XCTestCase {
 
-final class URLMacroTests: XCTestCase {
-
-    func test_valid() {
-        assertMacroExpansion(
-            """
-            let x = #URL("foo")
-            """,
-            expandedSource: """
-            let x = URL(string: "foo")!
-            """,
-            macros: testMacros
-        )
-    }
-
-    func test_empty() {
-        assertMacroExpansion(
-            """
-            let x = #URL("")
-            """,
-            expandedSource: """
-            let x = #URL("")
-            """,
-            diagnostics: [
-                DiagnosticSpec(message: "The provided value \"\" is invalid", line: 1, column: 9)
-            ],
-            macros: testMacros
-        )
+    func test_mailto_macro() {
+        let first = #mailTo("talkto@vsanthanam.com")
+        let second = URL(string: "mailto:talkto@vsanthanam.com")!
+        XCTAssertEqual(first, second)
     }
 
 }

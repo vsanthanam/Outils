@@ -34,5 +34,6 @@ struct OutilsMacrosPlugin: CompilerPlugin {
         URLMacro.self,
         LinkMacro.self,
         MailToMacro.self,
+        DateMacro.self
     ]
 }

@@ -26,7 +26,20 @@
 import Foundation
 
 /// A reusable swift error struct
-public struct ErrorMessage: Error, Equatable, Hashable, CustomStringConvertible, Sendable {
+///
+/// ## Topics
+///
+/// ### Initializers
+/// - ``init(_:file:function:line:column:)``
+///
+/// ### API
+/// - ``message``
+/// - ``callSite-swift.property``
+///
+/// ### String Conversion
+/// - ``description``
+/// - ``debugDescription``
+public struct ErrorMessage: Error, Equatable, Hashable, Codable, CustomStringConvertible, CustomDebugStringConvertible, Sendable {
 
     // MARK: - Initializers
 
@@ -37,59 +50,98 @@ public struct ErrorMessage: Error, Equatable, Hashable, CustomStringConvertible,
     ///   - function: Function containing the callsite where the error occured
     ///   - line: Line number of the callsite where the error occured
     ///   - column: Column number of the callsite where the error occured
-    public init(_ message: String,
-                file: StaticString = #file,
+    public init(_ message: String = "An error occured",
+                file: StaticString = #fileID,
                 function: StaticString = #function,
                 line: UInt = #line,
                 column: UInt = #column) {
-        self.message = message
-        self.file = file
-        self.function = function
-        self.line = line
-        self.column = column
+        let callSite = CallSite(file.description, function.description, line, column)
+        self.init(message: message, callSite: callSite)
     }
 
     // MARK: - API
 
+    /// A struct describing a call site
+    public struct CallSite: Equatable, Hashable, Sendable, Codable, CustomStringConvertible {
+
+        /// The file containing the call site
+        let file: String
+
+        /// The function containing the call site
+        let function: String
+
+        /// The line number of the call site
+        let line: UInt
+
+        /// The column number of the call site
+        let column: UInt
+
+        // MARK: - CustomStringConvertible
+
+        public var description: String {
+            [file, function, line.description, column.description].joined(separator: ":")
+        }
+
+        init(_ file: String, _ function: String, _ line: UInt, _ column: UInt) {
+            self.file = file
+            self.function = function
+            self.line = line
+            self.column = column
+        }
+    }
+
     /// The error message
     public let message: String
 
-    /// File containing the callsite where the error occured
-    public let file: StaticString
-
-    /// Function containing the callsite where the error occured
-    public let function: StaticString
-
-    /// Line number of the callsite where the error occured
-    public let line: UInt
-
-    /// Column number of the callsite where the error occured
-    public let column: UInt
+    /// The call site where the error occured
+    public let callSite: CallSite
 
     // MARK: - CustomStringConvertible
 
+    /// A textual representation of this instance.
+    ///
     public var description: String {
-        [file.description,
-         function.description,
-         line.description,
-         column.description,
-         message]
-            .joined(separator: ":")
+        message
     }
 
-    // MARK: - Equatable
-
-    public static func == (lhs: ErrorMessage, rhs: ErrorMessage) -> Bool {
-        lhs.message == rhs.message && lhs.file.description == rhs.file.description && lhs.function.description == rhs.function.description && lhs.line == rhs.line && lhs.column == rhs.column
+    public var debugDescription: String {
+        [callSite.description, message].joined(separator: ":")
     }
 
-    // MARK: - Hashable
+    // MARK: - Private
 
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(message)
-        hasher.combine(file.description)
-        hasher.combine(function.description)
-        hasher.combine(line)
-        hasher.combine(column)
+    private init(
+        message: String,
+        callSite: CallSite
+    ) {
+        self.message = message
+        self.callSite = callSite
+    }
+}
+
+public extension String.StringInterpolation {
+
+    mutating func appendInterpolation(message error: ErrorMessage) {
+        appendInterpolation(error.message)
+    }
+
+    mutating func appendInterpolation(callSite error: ErrorMessage) {
+        appendInterpolation(error.callSite.description)
+    }
+
+    mutating func appendInterpolation(file error: ErrorMessage) {
+        appendInterpolation(error.callSite.file)
+    }
+
+    mutating func appendInterpolation(function error: ErrorMessage) {
+        appendInterpolation(error.callSite.function)
+    }
+
+    mutating func appendInterpolation(line error: ErrorMessage) {
+        appendInterpolation(error.callSite.line.description)
+    }
+
+    mutating func appendInterpolation(column error: ErrorMessage) {
+        appendInterpolation(error.callSite.column.description)
     }
 }

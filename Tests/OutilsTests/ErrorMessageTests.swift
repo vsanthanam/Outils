@@ -1,5 +1,5 @@
 // Outils
-// OptionalExtensions.swift
+// ErrorMessageTests.swift
 //
 // MIT License
 //
@@ -23,44 +23,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public extension Optional {
+import Outils
+import XCTest
 
-    @discardableResult
-    func mustExist(
-        _ message: @autoclosure () -> String? = nil,
-        file: StaticString = #fileID,
-        function: StaticString = #function,
-        line: UInt = #line,
-        column: UInt = #column
-    ) throws -> Wrapped {
-        switch self {
-        case let .some(wrapped):
-            return wrapped
-        case .none:
-            throw ErrorMessage(
-                message() ?? "A required value contained nil",
-                file: file,
-                function: function,
-                line: line,
-                column: column
-            )
-        }
+final class ErrorMessageTests: XCTestCase {
+
+    func test_string_interp() {
+        let error = ErrorMessage()
+        let str1 = "the error is \(debug: error)"
+        let str2 = "the error is \(error)"
+        let str3 = "the error is in \(file: error)"
+        XCTAssertEqual("the error is OutilsTests/ErrorMessageTests.swift:test_string_interp():14:33:An error occured", str1)
+        XCTAssertEqual("the error is An error occured", str2)
+        XCTAssertEqual("the error is in OutilsTests/ErrorMessageTests.swift", str3)
     }
 
-    @discardableResult
-    func assertIfNil(
-        _ message: @autoclosure () -> String? = nil,
-        file: StaticString = #fileID,
-        function: StaticString = #function,
-        line: UInt = #line,
-        column: UInt = #column
-    ) -> Wrapped? {
-        switch self {
-        case .some:
-            return self
-        case .none:
-            assertionFailure(message() ?? "A required value contained nil", file: file, line: line)
-            return self
-        }
-    }
 }

@@ -33,7 +33,7 @@ final class ErrorMessageTests: XCTestCase {
         let str1 = "the error is \(debug: error)"
         let str2 = "the error is \(error)"
         let str3 = "the error is in \(file: error)"
-        XCTAssertEqual("the error is OutilsTests/ErrorMessageTests.swift:test_string_interp():14:33:An error occured", str1)
+        XCTAssertEqual("the error is OutilsTests/ErrorMessageTests.swift:test_string_interp():32:33:An error occured", str1)
         XCTAssertEqual("the error is An error occured", str2)
         XCTAssertEqual("the error is in OutilsTests/ErrorMessageTests.swift", str3)
     }

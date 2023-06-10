@@ -23,6 +23,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+/// Case the provided value into the provided type, or throw an error
+///
+/// You can supply the desired type as an argument, or have the compiler infer it from the call site
+///
+/// ```swift
+/// let val: SomeType = ...
+/// let explicit = try cast(val, to: SomeOtherType.self) // Explicitly dictate the type
+/// let implicit: SomeOtherType = try cast(val) // Infer the type from the call site
+/// ```
+///
+/// - Parameters:
+///   - value: The value to cast
+///   - type: The desired type
+///   - message: The error message to use if the cast fails
+///   - file: The file containing the call site
+///   - function: The function containing the call site
+///   - line: The line number of the call site
+///   - column: The column number of the call site
+/// - Throws: An ``ErrorMessage``, if the cast fails
+/// - Returns: An instance of `T`, casted from `value`
 public func cast<T>(
     _ value: Any,
     to type: T.Type = T.self,
@@ -44,6 +64,18 @@ public func cast<T>(
     return value
 }
 
+/// Cast the provided value into the provided type, or assert if the cast fails
+///
+/// - Parameters:
+///   - value: The value to cast
+///   - type: The desired type
+///   - message: The error message to use if the cast fails
+///   - file: The file containing the call site
+///   - function: The function containing the call site
+///   - line: The line number of the call site
+///   - column: The column number of the call site
+/// - Returns: An instance of `T`, casted from `value`, or `nil` if the cast failed.
+/// - Important: Failed casts will result in an `assertionFailure`, which will be a no-op for production users, but will halt execution of the program in debug builds.
 public func castOrAssert<T>(
     _ value: Any,
     to type: T.Type = T.self,

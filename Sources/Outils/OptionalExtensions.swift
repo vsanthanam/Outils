@@ -28,7 +28,7 @@ public extension Optional {
     @discardableResult
     func mustExist(
         _ message: @autoclosure () -> String? = nil,
-        file: StaticString = #file,
+        file: StaticString = #fileID,
         function: StaticString = #function,
         line: UInt = #line,
         column: UInt = #column
@@ -50,7 +50,7 @@ public extension Optional {
     @discardableResult
     func assertIfNil(
         _ message: @autoclosure () -> String? = nil,
-        file: StaticString = #file,
+        file: StaticString = #fileID,
         function: StaticString = #function,
         line: UInt = #line,
         column: UInt = #column

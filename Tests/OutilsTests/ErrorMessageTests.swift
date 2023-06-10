@@ -1,5 +1,5 @@
 // Outils
-// Casting.swift
+// ErrorMessageTests.swift
 //
 // MIT License
 //
@@ -23,39 +23,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-public func cast<T>(
-    _ value: Any,
-    to type: T.Type = T.self,
-    message: @autoclosure () -> String? = nil,
-    file: StaticString = #fileID,
-    function: StaticString = #function,
-    line: UInt = #line,
-    column: UInt = #column
-) throws -> T {
-    guard let value = value as? T else {
-        throw ErrorMessage(
-            message() ?? "Could not cast value \(value) to type \(T.self)",
-            file: file,
-            function: function,
-            line: line,
-            column: column
-        )
-    }
-    return value
-}
+import Outils
+import XCTest
 
-public func castOrAssert<T>(
-    _ value: Any,
-    to type: T.Type = T.self,
-    message: @autoclosure () -> String? = nil,
-    file: StaticString = #fileID,
-    function: StaticString = #function,
-    line: UInt = #line,
-    column: UInt = #column
-) -> T? {
-    guard let value = value as? T else {
-        assertionFailure(message() ?? "Could not cast value \(value) to type \(T.self)", file: file, line: line)
-        return nil
+final class ErrorMessageTests: XCTestCase {
+
+    func test_string_interp() {
+        let error = ErrorMessage()
+        let str1 = "the error is \(debug: error)"
+        let str2 = "the error is \(error)"
+        let str3 = "the error is in \(file: error)"
+        XCTAssertEqual("the error is OutilsTests/ErrorMessageTests.swift:test_string_interp():14:33:An error occured", str1)
+        XCTAssertEqual("the error is An error occured", str2)
+        XCTAssertEqual("the error is in OutilsTests/ErrorMessageTests.swift", str3)
     }
-    return value
+
 }

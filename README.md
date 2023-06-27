@@ -1,4 +1,3 @@
-# Outils
 
 [![MIT License](https://img.shields.io/github/license/vsanthanam/Outils)](https://github.com/vsanthanam/Outils/blob/main/LICENSE)
 [![Package Releases](https://img.shields.io/github/v/release/vsanthanam/Outils)](https://github.com/vsanthanam/Outils/releases)
